@@ -1,16 +1,11 @@
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  ScrollView,
-  SafeAreaView,
-} from "react-native";
+import { ScrollView, Text, FlatList, SafeAreaView } from "react-native";
 import { Card, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
 import { Loading } from "./LoadingComponent";
+
+import * as Animatable from "react-native-animatable";
 
 const mapStateToProps = (state) => {
   return {
@@ -29,7 +24,6 @@ function History() {
         three-star Michelin chefs in the world, you never know what will arrive
         on your plate the next time you visit us.
       </Text>
-      <Text> </Text>
       <Text style={{ margin: 10 }}>
         The restaurant traces its humble beginnings to The Frying Pan, a
         successful chain started by our CEO, Mr. Peter Pan, that featured for
@@ -41,22 +35,25 @@ function History() {
 
 class About extends Component {
   static navigationOptions = {
-    title: "About us",
+    title: "About Us",
   };
+
   render() {
-    const renderAboutlist = ({ item, index }) => {
+    // const { params } = this.props.navigation.state;
+    const renderLeader = ({ item, index }) => {
       return (
-        <View style={{ top: 10 }}>
-          <ListItem
-            key={index}
-            title={item.name}
-            subtitle={item.description}
-            hideChevron={true}
-            leftAvatar={{ source: { uri: baseUrl + item.image } }}
-          />
-        </View>
+        <ListItem
+          roundAvatar
+          key={index}
+          title={item.name}
+          subtitle={item.description}
+          subtitleNumberOfLines={15}
+          hideChevron={true}
+          leftAvatar={{ source: { uri: baseUrl + item.image } }}
+        />
       );
     };
+
     if (this.props.leaders.isLoading) {
       return (
         <ScrollView>
@@ -69,23 +66,27 @@ class About extends Component {
     } else if (this.props.leaders.errMess) {
       return (
         <ScrollView>
-          <History />
-          <Card title="Corporate Leadership">
-            <Text>{this.props.leaders.errMess}</Text>
-          </Card>
+          <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+            <History />
+            <Card title="Corporate Leadership">
+              <Text>{this.props.leaders.errMess}</Text>
+            </Card>
+          </Animatable.View>
         </ScrollView>
       );
     } else {
       return (
         <ScrollView>
-          <History />
-          <Card title="Corporate Leadership">
-            <FlatList
-              data={this.props.leaders.leaders}
-              renderItem={renderAboutlist}
-              keyExtractor={(item) => item.id.toString()}
-            />
-          </Card>
+          <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+            <History />
+            <Card title="Corporate Leadership">
+              <FlatList
+                data={this.props.leaders.leaders}
+                renderItem={renderLeader}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </Card>
+          </Animatable.View>
         </ScrollView>
       );
     }
